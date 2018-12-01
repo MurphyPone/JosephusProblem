@@ -3,7 +3,6 @@ class Node {
     this.value = val;
     this.next = next;
     this.prev = prev;
-    this.isIt = false;
     this.isAlive = true;
   }
 

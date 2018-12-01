@@ -5,9 +5,8 @@ class DoublyLinkedCircularList {
     this.head = new Node(1, null, null);
     this.head.setNext(this.head);
     this.head.setPrev(this.head);
-
     this.current = this.head;
-    //this.head.isIt = true;
+
     var i = 2;
     while(i <= n) {
       this.add( new Node(i++, this.head, this.head.getPrev() ) ); //something wrong with insert
@@ -20,17 +19,31 @@ class DoublyLinkedCircularList {
     while( node.getNext().getValue() != node.getValue() ) { //while the length > 1
       this.removeNext(node);
       node = node.getNext();
-      //node.isIt = true
     }
     return node.getValue();
   }
 
+  //Assumes this.current.isAlive
   josephusButton() {
-    if (this.current.getNext().getValue() != this.current.getValue() ) {
-      this.removeNext(this.current);
-      this.current = this.current.getNext();
+    var toKill = this.current.getNext();
+    if( this.current.getValue() == toKill.getValue() ) { // if everyone is dead
+      console.log("no people left to kill :(");
+      return "no one left to kill"
+    } else {  //Else, find the next living node
+      if(!toKill.isAlive) {
+        while(!toKill.isAlive) {
+          toKill = toKill.getNext(); //find the adjacent & alive node
+        }
+      }
+      toKill.isAlive = false; // killem
+
+      this.current = toKill.getNext();
+      while(!this.current.isAlive) {
+        this.current = this.current.getNext();
+      }
+
+      console.log("killed: " + toKill.getValue());
     }
-    console.log(this.current);
   }
 
   formula() {
@@ -55,20 +68,26 @@ class DoublyLinkedCircularList {
       fill(255);
       stroke(255);
 
-      if (i == this.formula() ) {
+      if (i == this.formula() ) { // if chosen
         color(0, 255, 0);
         fill(0, 255, 0);
         stroke(0, 255, 0);
       }
 
-      if(node.getValue() == this.current.getValue() ) {
+      if(!node.isAlive) { //if dead
+        color(100);
+        fill(100);
+        stroke(100);
+      }
+
+      if(node.getValue() == this.current.getValue()) { //display current
         color(255, 199, 0);
         fill(255, 199, 0);
         stroke(255, 199, 0);
       }
+
       text(i, x, y);
       node = node.getNext();
-
     }
   }
 
