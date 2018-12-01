@@ -28,18 +28,23 @@ class DoublyLinkedCircularList {
     var toKill = this.current.getNext();
     if( this.current.getValue() == toKill.getValue() ) { // if everyone is dead
       console.log("no people left to kill :(");
-      return "no one left to kill"
+      noLoop();
+      return;
+
     } else {  //Else, find the next living node
-      if(!toKill.isAlive) {
-        while(!toKill.isAlive) {
-          toKill = toKill.getNext(); //find the adjacent & alive node
-        }
+      while(!toKill.isAlive) {
+        toKill = toKill.getNext(); //find the adjacent & alive node
       }
       toKill.isAlive = false; // killem
-
-      this.current = toKill.getNext();
-      while(!this.current.isAlive) {
+      this.current = toKill.getNext();//move marker to next person
+      var stop = 0; //this is ugly !
+      while(!this.current.isAlive) { //TODO this runs infinitely... but it should find it's way back to the last man...
+        if(stop++ > this.n-2) { //manual stoppage
+          noLoop();
+          return;
+        }
         this.current = this.current.getNext();
+        console.log("searching for next alive: " + this.current.getValue())
       }
 
       console.log("killed: " + toKill.getValue());
